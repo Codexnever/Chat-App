@@ -11,7 +11,7 @@ const dbConfig = require('./config/db');
 const requireAuth = require('./middleware/authMiddleware');
 
 // Other imports...
-const signupRoutes = require('./routes/signupRoute');
+const signupRouter = require('./routes/signupRoute'); // Import the signup router
 const signinRoutes = require('./routes/signinRoute');
 const chatRoutes = require('./routes/chatRoute');
 const logoutRoutes = require('./routes/logout');
@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 dbConfig();
 
 // Routes
-app.use(signupRoutes);
+app.use(signupRouter);
 app.use(signinRoutes);
 app.use(chatRoutes);
 app.use(logoutRoutes);
@@ -37,27 +37,30 @@ io.on('connection', (socket) => {
     console.log('New user connected');
 
     socket.on('chat message', async (data) => {
-        // console.log('Received data:', data);
+     //   console.log('Received data:', data);
 
         try {
             const { userId, message } = data;
-            // console.log(message + userId);
+          //  console.log('Received message from user:', userId, message);
+
             if (!userId) {
                 console.log('User not authenticated');
                 return;
             }
-            // await ChatMessage.create({ user: userId, message });
-            // console.log('Message saved successfully');
+            
+            // Assuming sender's user ID is included in the data
+            io.emit('chat message', { message, sender: userId });
+            console.log('Message sent successfully');
         } catch (error) {
-            console.error('Error saving chat message:', error);
+            console.error('Error sending chat message:', error);
         }
-        io.emit('chat message', data);
     });
 
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });
 });
+
 
 
 // Start the server

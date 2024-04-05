@@ -1,18 +1,17 @@
 const express = require('express');
-const app = express();
 const router = express.Router(); // Create a router
 const mongoose = require('../config/db');
 const bcrypt = require('bcrypt');
 const requireAuth = require('../middleware/authMiddleware')
-const Signup = require('../models/signup'); // Import the Signup model
+const Signup = require('../models/signup');  // Import the Signup model
 
 
 // Define routes on the router
-router.get('/Signup', (req, res) => {
+router.get('/signup', (req, res) => {
     res.render('Signup');
 });
 
-router.post('/Signup', async (req, res) => {
+router.post('/signup', async (req, res) => {
     try {
         const { email, password, name } = req.body;
 
@@ -28,6 +27,5 @@ router.post('/Signup', async (req, res) => {
 });
 
 // Use the router in your Express application
-app.use('/signup', router);
 
-module.exports = app;
+module.exports = router;
