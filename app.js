@@ -50,7 +50,7 @@ io.on('connection', (socket) => {
             
             // Assuming sender's user ID is included in the data
             io.emit('chat message', { message, sender: userId });
-            console.log('Message sent successfully');
+         //   console.log('Message sent successfully');
         } catch (error) {
             console.error('Error sending chat message:', error);
         }

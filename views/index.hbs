@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Chat Application</title>
     <style>
         body {
@@ -11,7 +12,14 @@
             padding: 0;
             background-color: #f0f0f0;
         }
-
+#form{
+        display: flex;
+    height: 41px;
+    position: absolute;
+    right: 1rem;
+    width: 25rem;
+    bottom: 4px;
+}
         #chat-container {
             display: flex;
             height: 100vh;
@@ -142,6 +150,162 @@
             width: 25rem;
             margin-bottom: 20rem;
         }
+    .emoji-selector {
+            position: absolute;
+    top: calc(-549% + 10px);
+                right: 10px;
+    background:linear-gradient(45deg, #c7db2b, #7a759dad);
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 5px;
+            overflow-y: auto;
+            max-height: 200px;
+            width: 300px;
+            display: none;
+            z-index: 3;
+                animation: shadow-animation 2s ease infinite;
+
+        }
+        @keyframes shadow-animation {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgb(255, 230, 0);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+}
+ .emoji-selector::-webkit-scrollbar{
+    width: 1px;
+
+ }
+        .emoji-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 5px;
+        }
+
+        .emoji-list-item {
+            width: 15%;
+            text-align: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .emoji-icon {
+            font-size: 28px;
+            z-index: 2;
+                    background: none;
+border: none;
+cursor: pointer;
+        }
+@media only screen and (min-width: 350px) and (max-width: 420px) {
+
+ #messages-container {
+    display: flex;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-bottom: 6rem;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+#messages {
+       max-width: 85%;
+    margin-left: 2rem;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.message.sender {
+   align-self: flex-end;
+        
+}
+
+.message.sender::-webkit-scrollbar{
+    width: 0px ;
+}
+    #form-container {
+        display: none; /* Show the form-container */
+        width: 100%;
+        margin-top: auto; /* Push form container to the bottom */
+    }
+
+    #form {
+           width: 90%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+    }
+
+    #input {
+        flex: 1;
+        padding: 10px;
+        padding-left: 22px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    #input:focus{
+        outline: none;
+    }
+
+    #submit-btn {
+        padding: 10px 15px;
+        font-size: 16px;
+        font: bold;
+        border: none;
+        border-radius: 5px;
+        background-color: #ffd310;
+        color: #000000;
+        cursor: pointer;
+    }
+
+    .emoji-selector {
+         position: absolute;
+    top: calc(-369% + 10px);
+        right: 10px;
+    background:linear-gradient(45deg, #c7db2b, #9c90ece7);
+        border: 2px solid #ccc;
+        border-radius: 10px;
+        padding: 5px;
+        overflow-y: auto;
+        max-height: 200px;
+        width: 300px;
+        display: none;
+        z-index: 3;
+        animation: shadow-animation 2s ease infinite;
+    }
+
+    .emoji-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 5px;
+    }
+
+    .emoji-list-item {
+        width: 15%;
+        text-align: center;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .emoji-icon {
+        font-size: 28px;
+        z-index: 2;
+        background: none;
+    }
+}
+
+
+
 
     </style>
 </head>
@@ -154,21 +318,26 @@
     <div id="form-container">
 
         <div class="user">
-            User :-
+            User:-
             {{name}}
-        </div>
 
-        <div id="users">
-            <div class="client">User 1</div>
-            <div class="client">User 2</div>
-            <div class="client">User 3</div>
-            <div class="client">User 4</div>
         </div>
-        <form id="form">
+<div id="users">
+    {{#each users}}
+        <div class="client">{{this.name}}</div>
+    {{/each}}
+</div>
+
+    </div>
+  <form id="form">
             <input id="input" autocomplete="off" placeholder="Type a message..."/>
+            <div class="emoji-selector" id="emojiSelectorContainer">
+                <!-- Emoji list -->
+                <div class="emoji-list" id="emojiList"></div>
+            </div>
+            <button id="emoji-icon" class="emoji-icon"><i class="fa-solid fa-icons"></i></button>
             <button id="submit-btn">Send</button>
         </form>
-    </div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -208,7 +377,41 @@ console.log(userId)
  messages.prepend(item);
     window.scrollTo(0, document.body.scrollHeight); //
         });
-    });
+    })
+
+    const emojiSelectorContainer = document.getElementById('emojiSelectorContainer');
+
+    
+    const emojiList = document.getElementById('emojiList');
+    const emojiIcon = document.getElementById('emoji-icon');
+let isEmojiSelectorVisible = false;
+
+ emojiIcon.addEventListener('click', () => {
+    if (!isEmojiSelectorVisible) {
+        emojiSelectorContainer.style.display = 'block';
+    } else {
+        emojiSelectorContainer.style.display = 'none';
+    }
+    isEmojiSelectorVisible = !isEmojiSelectorVisible;
+});
+
+    // Fetch emojis and load into the list
+    fetch('https://emoji-api.com/emojis?access_key=61ef1993745253f77c1a8f71da4f353b67de7f5e')
+        .then(res => res.json())
+        .then(data => loadEmoji(data))
+        .catch(error => console.error('Error fetching emojis:', error));
+
+    function loadEmoji(data) {
+        data.forEach(emoji => {
+            let span = document.createElement('span');
+            span.classList.add('emoji-list-item');
+            span.textContent = emoji.character;
+            span.addEventListener('click', () => {
+                input.value += emoji.character;
+            });
+            emojiList.appendChild(span);
+        });
+    }
 </script>
 </body>
 </html>

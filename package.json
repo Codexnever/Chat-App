@@ -2,6 +2,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body": "^5.1.0",
+    "connect-mongo": "^3.2.0",
     "cookie": "^0.6.0",
     "cookie-parser": "^1.4.6",
     "cookie-session": "^2.1.0",
@@ -13,6 +14,7 @@
     "mongoose": "^8.2.3",
     "parser": "^0.1.4",
     "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "zod": "^3.22.4"
   }
 }

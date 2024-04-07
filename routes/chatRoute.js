@@ -13,8 +13,9 @@ router.get('/chat', requireAuth, async (req, res) => {
         const userId = req.userId;
         const name = user ? user.name : 'Unknown';
         const email = user.email;
-
-        res.render('index', { userId, messages, user, email, name });
+                const users = await Signup.find({}, 'name'); // Retrieve only the name field
+//here you can get total user in Db .length
+        res.render('index', { userId, messages, user, email, name,users });
     } catch (error) {
         console.error('Error rendering chat interface:', error);
         res.status(500).json({ success: false, message: 'An error occurred while rendering chat interface' });
