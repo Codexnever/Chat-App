@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Signup = require('../models/signup'); // Import from the models folder, assuming your Signup model is in this folder
-const requireAuth = require('../middleware/authMiddleware'); // Import your authentication middleware
+const Signup = require('../models/signup');
+const requireAuth = require('../middleware/authMiddleware'); 
 
 // Signin route
 router.get('/signin', (req, res) => {
@@ -16,6 +16,7 @@ router.post('/signin', async (req, res) => {
 
         // Find user by email using Mongoose model
         const user = await Signup.findOne({ email });
+     //   console.log('Route.js:user',user)
         if (!user) {
             return res.status(401).json({ success: false, message: 'Invalid username or password' });
         }
@@ -27,9 +28,10 @@ router.post('/signin', async (req, res) => {
         }
 
         // Generate JWT token
-        const token = jwt.sign({ userId: user._id }, 'ndnvms');
-
-        res.cookie('token', token, {
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+//console.log('Token is',token)
+        res.cookie('token', token, 
+        {
             httpOnly: true,
         });
 

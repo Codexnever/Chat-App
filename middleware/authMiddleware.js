@@ -12,6 +12,7 @@ const requireAuth = (req, res, next) => {
             next();
         });
     } else {
+        
         res.status(401).json({ success: false, message: 'Authentication failed' });
     }
 };

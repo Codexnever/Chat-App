@@ -8,7 +8,8 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const path = require('path');
 const dbConfig = require('./config/db');
-const requireAuth = require('./middleware/authMiddleware');
+require('dotenv').config();
+//const requireAuth = require('./middleware/authMiddleware');
 
 // Other imports...
 const signupRouter = require('./routes/signupRoute'); // Import the signup router
@@ -33,33 +34,50 @@ app.use(chatRoutes);
 app.use(logoutRoutes);
 // Socket.IO connection handling
 
+const activeSockets = {}; // Create an object to store active sockets
+
 io.on('connection', (socket) => {
-    console.log('New user connected');
+    const userId = socket.handshake.query.userId;
+    io.emit('user count', io.engine.clientsCount);
 
-    socket.on('chat message', async (data) => {
-     //   console.log('Received data:', data);
+    console.log(`User ${userId}  connected`);
+    io.emit('user connected', { userId });
 
+    // Store the socket associated with the user ID in the activeSockets object
+    activeSockets[userId] = socket;
+
+    // Listen for private messages
+    socket.on('private message', (data) => {
         try {
-            const { userId, message } = data;
-          //  console.log('Received message from user:', userId, message);
-
-            if (!userId) {
-                console.log('User not authenticated');
-                return;
-            }
+            const { recipient, message } = data;
+         //   console.log(`${recipient} received message: ${message}`);
             
-            // Assuming sender's user ID is included in the data
-            io.emit('chat message', { message, sender: userId });
-         //   console.log('Message sent successfully');
+            const recipientSocket = activeSockets[recipient];
+            if (recipientSocket) {
+                socket.emit('private message', { sender: userId, message });
+                recipientSocket.emit('private message', { sender: userId, message });
+            } else {
+                console.error(`Recipient socket for user ${recipient} not found.`);
+                socket.emit('recipient not found', { recipient: recipient });
+
+            }
         } catch (error) {
-            console.error('Error sending chat message:', error);
+            console.error('Error sending private message:', error);
+            socket.emit('private message error', { error: error.message });
         }
     });
+    
 
     socket.on('disconnect', () => {
-        console.log('User disconnected');
+        console.log(`User ${userId} disconnected`);
+        io.emit('user count', io.engine.clientsCount);
+
+        delete activeSockets[userId];
     });
 });
+
+
+
 
 
 

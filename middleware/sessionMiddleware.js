@@ -3,13 +3,13 @@ const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
 
 // Assuming you have a mongoose connection setup
-mongoose.connect('mongodb://localhost:27017/Whatsapp', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
 
 const sessionMiddleware = session({
-  secret: 'your-secret-key',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   store: new MongoStore({ mongooseConnection: mongoose.connection }), // Use mongoose connection
