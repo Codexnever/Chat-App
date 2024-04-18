@@ -12,8 +12,8 @@ const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  store: new MongoStore({ mongooseConnection: mongoose.connection }), // Use mongoose connection
-  cookie: { secure: false } // Set secure based on your server configuration
+  store: new MongoStore({ mongooseConnection: mongoose.connection }), 
+  cookie: { secure: false }
 });
 
 module.exports = sessionMiddleware;

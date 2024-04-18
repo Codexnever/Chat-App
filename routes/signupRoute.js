@@ -7,7 +7,7 @@ const Signup = require('../models/signup');  // Import the Signup model
 
 
 // Define routes on the router
-router.get('/signup', (req, res) => {
+router.get('/', (req, res) => {
     res.render('Signup');
 });
 

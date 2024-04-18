@@ -12,7 +12,7 @@ require('dotenv').config();
 //const requireAuth = require('./middleware/authMiddleware');
 
 // Other imports...
-const signupRouter = require('./routes/signupRoute'); // Import the signup router
+const signupRouter = require('./routes/signupRoute'); 
 const signinRoutes = require('./routes/signinRoute');
 const chatRoutes = require('./routes/chatRoute');
 const logoutRoutes = require('./routes/logout');
@@ -22,6 +22,7 @@ app.use(express.static('public'));
 app.set('view engine', 'hbs');
 // Set views, partialsPath, bodyParser, cookieParser
 app.use(cookieParser());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Connect to database
@@ -32,8 +33,8 @@ app.use(signupRouter);
 app.use(signinRoutes);
 app.use(chatRoutes);
 app.use(logoutRoutes);
-// Socket.IO connection handling
 
+// Socket.IO connection handling
 const activeSockets = {}; // Create an object to store active sockets
 
 io.on('connection', (socket) => {
@@ -77,11 +78,6 @@ io.on('connection', (socket) => {
 });
 
 
-
-
-
-
-// Start the server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);

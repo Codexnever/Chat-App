@@ -22,11 +22,48 @@ body {
 
 #messages-container {
     flex: 1;
-    overflow-y: auto;
+    overflow-x: hidden;
+    /* Horizontal overflow hidden */
+    overflow-y: scroll;
+    position: relative;
+    height: 39.3rem;
+    border: 1px solid #dad7d7;
+    border-bottom: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 60px;
+    display: none;
+    flex-direction: column-reverse;
+
+}
+
+#messages-container::-webkit-scrollbar {
+    width: 1px;
+}
+
+#sidebar {
+    width: 20px;
+    background-color: #656363;
     padding: 20px;
     display: flex;
-    flex-direction: column-reverse;
-    /* Stack messages from bottom to top */
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-icons {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-icon {
+    padding: 10px 0;
+    text-align: center;
+}
+
+
+
+.icon-circle i {
+    color: #333;
 }
 
 #form-container {
@@ -46,9 +83,9 @@ body {
 }
 
 #form-container #form {
-    width: 25%; /* Initially set to 25% */
-    min-width: 200px;    
-    display: flex;
+    width: 65.9%;
+    min-width: 391px;
+    display: none;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
@@ -81,9 +118,10 @@ body {
 }
 
 #messages {
-    max-width: 70%;
+    width: 93%;
     display: flex;
-    flex-direction: column-reverse;
+    position: absolute;
+    flex-direction: column;
 }
 
 .message {
@@ -97,12 +135,12 @@ body {
 }
 
 .message.sender {
-    align-self: flex-end;
+    align-self: flex-start;
     background-color: #f1f368;
 }
 
 .message.receiver {
-    align-self: flex-start;
+    align-self: flex-end;
     background-color: #dcf8c6;
 }
 
@@ -125,7 +163,7 @@ body {
     width: 100%;
     box-sizing: border-box;
     display: flex;
-align-items: center;
+    align-items: center;
     cursor: pointer;
     border-radius: 5px;
     background-color: rgb(255, 230, 8);
@@ -133,36 +171,41 @@ align-items: center;
 
 
 .client {
-align-items: center;
-border-radius: 2px;
-margin-bottom: 10px;
-padding: 10px; /* Add padding to create space for the border */
-border-bottom: 2px solid transparent; /* Initially transparent border bottom */
-cursor: pointer;
-width: 24rem;
-  box-shadow: 0px 3px 10px rgba(209, 209, 202, 0.555);
+    align-items: center;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    padding: 10px;
+    /* Add padding to create space for the border */
+    border-bottom: 2px solid transparent;
+    /* Initially transparent border bottom */
+    cursor: pointer;
+    width: 24rem;
+    box-shadow: 0px 3px 10px rgba(209, 209, 202, 0.555);
 
-transition: transform 0.3s, border-bottom 0.5s, box-shadow 0.5s; /* Add transition for border-bottom and box-shadow */
+    transition: transform 0.3s, border-bottom 0.5s, box-shadow 0.5s;
+    /* Add transition for border-bottom and box-shadow */
 }
 
 .client:hover {
-transform: scale(1.05); /* Add hover animation */
-border-bottom: 2px solid #ffd724; /* Border color */
-box-shadow: 0px 10px 25px rgb(251, 255, 0);
+    transform: scale(1.05);
+    /* Add hover animation */
+    border-bottom: 2px solid #ffd724;
+    /* Border color */
+    box-shadow: 0px 10px 25px rgb(251, 255, 0);
 }
 
 .user-profile-image {
-width: 30px;
-height: 30px;
-border-radius: 50%;
-margin-right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
 }
 
 #users {
-display: flex;
-flex-direction: column;
-margin-bottom: 20rem;
-margin-right: 12px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20rem;
+    margin-right: 12px;
 }
 
 .emoji-selector {
@@ -222,79 +265,169 @@ margin-right: 12px;
     border: none;
     cursor: pointer;
 }
+
 #user-count-wrapper {
-display: flex;
-font-weight: bold;
-align-items: center;
-position: relative;
-margin-left: 300px
+    display: flex;
+    font-weight: bold;
+    align-items: center;
+    position: relative;
+    margin-left: 300px
 }
 
 #user-count-wrapper::before {
-content: "";
-width: 8px;
-height: 8px;
-border-radius: 50%;
-background-color: rgb(136, 255, 56);
-position: absolute;
-left: -20px;
-animation: waveAnimation 2s linear infinite;
-transform: scale(0); /* Start with scale 0 */
-opacity: 0; /* Start with opacity 0 */
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgb(136, 255, 56);
+    position: absolute;
+    left: -20px;
+    animation: waveAnimation 2s linear infinite;
+    transform: scale(0);
+    /* Start with scale 0 */
+    opacity: 0;
+    /* Start with opacity 0 */
 }
 
 @keyframes waveAnimation {
-0% {
-box-shadow: 0 0 30px rgba(136, 255, 56, 0.5); /* Initial shadow */
-transform: scale(1.2);
-opacity: 1; /* Fully visible */
-}
-50% {
-box-shadow: 0 5 80px rgba(112, 255, 17, 0.788); /* Spread and shadow */
-transform: scale(2); /* Scale up */
-opacity: 1; /* Partially visible */
-}
-100% {
-box-shadow: 0 0 40px rgba(124, 255, 36, 0.466); /* No shadow and no spread */
-transform: scale(1.2);
-opacity: 1.5; /* Hidden */
-}
+    0% {
+        box-shadow: 0 0 30px rgba(136, 255, 56, 0.5);
+        /* Initial shadow */
+        transform: scale(1.2);
+        opacity: 1;
+        /* Fully visible */
+    }
+
+    50% {
+        box-shadow: 0 5 80px rgba(112, 255, 17, 0.788);
+        /* Spread and shadow */
+        transform: scale(2);
+        /* Scale up */
+        opacity: 1;
+        /* Partially visible */
+    }
+
+    100% {
+        box-shadow: 0 0 40px rgba(124, 255, 36, 0.466);
+        /* No shadow and no spread */
+        transform: scale(1.2);
+        opacity: 1.5;
+        /* Hidden */
+    }
 }
 
 /* Custom Alert */
 .custom-alert {
     display: none;
     position: fixed;
-    top: 7.9%;
+    top: 13%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
     padding: 20px;
-    width: 300px;
-    box-shadow: 0 0 10px rgb(255, 97, 97); 
-  }
-  
-  .close-btn {
-    position: absolute;
-    top: 5px;
-    right: 10px;
-    cursor: pointer;
-  }
-  
-  .alert-content {
+    max-width: 300px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    animation: rotateShadow 3s infinite linear;
+
+}
+
+@keyframes rotateShadow {
+    0% {
+        box-shadow: 0 0 20px rgba(255, 7, 7, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(255, 7, 7, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 0 20px rgba(255, 7, 7, 0.3);
+    }
+}
+
+.alert-content {
     text-align: center;
-  }
-  
-  .alert-content h2 {
+}
+
+.alert-content h2 {
     margin-top: 0;
-  }
-  
-  .alert-content p {
-    margin-bottom: 13px;
-  }
-  
+    color: #333333;
+}
+
+.alert-content p {
+    margin-bottom: 15px;
+    color: #666666;
+}
+
+
+.icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background-color: #ff2020;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+}
+
+.icon {
+    color: #ffffff;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+/* topbar */
+.top-bar {
+    position: fixed;
+    top: 0;
+    width: 70%;
+    margin-bottom: 37rem;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(121, 206, 255, 0.966);
+    /* backdrop-filter: blur(10px); */
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+}
+
+.user-profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-name {
+    font-weight: bold;
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.search-icon i {
+    color: #333;
+}
+
+/* end */
 
 
 @media only screen and (min-width: 350px) and (max-width: 420px) {
@@ -312,7 +445,7 @@ opacity: 1.5; /* Hidden */
         max-width: 85%;
         margin-left: 2rem;
         display: flex;
-        flex-direction: column-reverse;
+        flex-direction: column;
     }
 
     .message.sender {
@@ -368,8 +501,8 @@ opacity: 1.5; /* Hidden */
 
     .emoji-selector {
         position: absolute;
-        top: calc(-365% + 10px); 
-               right: 10px;
+        top: calc(-365% + 10px);
+        right: 10px;
         background: linear-gradient(45deg, #c7db2b, #9c90ecb0);
         border: 2px solid #ccc;
         border-radius: 10px;

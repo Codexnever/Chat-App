@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<link rel="stylesheet" href="/css/chat.css">
+    <link rel="stylesheet" href="/css/chat.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -13,136 +13,173 @@
 
 <body>
     <div id="chat-container" data-user-id="{{userId}}">
-        <div id="messages-container">
-            <div id="messages"></div>
+        <div id="sidebar">
+            <!-- Vertical strip content goes here -->
+            <div class="sidebar-content">
+                <!-- Add your content here -->
+            </div>
+            <div class="sidebar-icons">
+                <div class="sidebar-icon">
+                    <i class="fas fa-cog"></i> <!-- Settings icon -->
+                </div>
+                <div class="sidebar-icon">
+                    <div class="icon-circle">
+                        <i class="fas fa-user"></i> <!-- Account icon inside a circle -->
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="form-container">
             <div class="user">
-    <p style="font-weight: bold;">Hello {{name}}</p> 
-<div id="user-count-wrapper">
-    <p><span id="user-count">0</span></p>
-</div>
-
+                <p style="font-weight: bold;">Hello {{name}}</p>
+                <div id="user-count-wrapper">
+                    <p><span id="user-count">0</span></p>
+                </div>
             </div>
- <div id="users">
-    {{#each users}}
-    <div class="client" data-user-id="{{this._id}}">
-        <img src="{{this.profileImageUrl}}" class="user-profile-image"> 
-        <span class="user-name">{{this.name}}</span> 
-    </div>
-    {{/each}}
-</div> 
-
-        <form id="form">
-            <input id="input" autocomplete="off" placeholder="Type a message..." />
-            <div class="emoji-selector" id="emojiSelectorContainer">
-                <div class="emoji-list" id="emojiList"></div>
+            <div id="users">
+                {{#each users}}
+                <div class="client" data-user-id="{{this._id}}">
+                    <img src={{this.profileImage}} class="user-profile-image">
+                    <span class="user-name">{{this.name}}</span>
+                </div>
+                {{/each}}
             </div>
-            <button id="emoji-icon" class="emoji-icon"><i class="fas fa-smile"></i></button> <!-- Changed the emoji icon -->
-            <button id="submit-btn">Send</button>
-        </form>
+            <form id="form">
+                <input id="input" autocomplete="off" placeholder="Type a message..." />
+                <div class="emoji-selector" id="emojiSelectorContainer">
+                    <div class="emoji-list" id="emojiList"></div>
+                </div>
+                <button id="emoji-icon" class="emoji-icon"><i class="fas fa-smile"></i></button>
+                <!-- Changed the emoji icon -->
+                <button id="submit-btn">Send</button>
+            </form>
+        </div>
+        {{!-- Custom Alert --}}
+        <div id="custom-alert" class="custom-alert">
+            <div class="icon-circle">
+                <span class="icon">&#9888;</span>
+            </div>
+            <div class="alert-content" id="alert-content"></div>
+        </div>
+        {{!-- End --}}
+        <div id="messages-container">
+            <div class="top-bar">
+                <div class="left-section" >
+                    <img src="circle-image.jpg" alt="User Profile Image" class="user-profile-image">
+                    <span class="user-name">demo nam</span>
+
+                </div>
+                <div class="right-section">
+                    <div class="search-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+            <div id="messages"></div>
+        </div>
     </div>
 
-    {{!-- Custom Alert --}}
-    <div id="custom-alert" class="custom-alert">
-  <div class="alert-content" id="alert-content">
-  </div>
-</div>
-{{!-- End --}}
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 
-<script>
+    <script>
 
-    const userId = '{{userId}}'; 
-const userName = '{{userName}}';
-     //   console.log('this is username',userName)
-const socket = io({ query: { userId, userName } });
+        const ab = document.getElementsByClassName('client');
+
+        for (let i = 0; i < ab.length; i++) {
+            ab[i].addEventListener('click', function () {
+                document.getElementById('messages-container').style.display = 'flex';
+                document.getElementById('form').style.display = 'flex';
+            });
+        }
+
+        const userId = '{{userId}}';
+        const userName = '{{userName}}';
+        //   console.log('this is username',userName)
+        const socket = io({ query: { userId, userName } });
         let selectedUserId = null;
 
         // Event listener for selecting a user
         document.querySelectorAll('.client').forEach(client => {
             client.addEventListener('click', () => {
                 selectedUserId = client.getAttribute('data-user-id');
-               // console.log('Selected User ID:', selectedUserId);
+                // console.log('Selected User ID:', selectedUserId);
             });
         });
 
-    const form = document.getElementById('form');
-    const input = document.getElementById('input');
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (!selectedUserId) {
-    //    console.log('No user selected');
-        return;
-    }
-    const message = input.value.trim();
-  //  console.log('Message:', message);
-    if (message !== '') {
-        // Emit the message directly to the selected user
-        socket.emit('private message', { recipient: selectedUserId
-        , message });
-        input.value = '';
-      //  console.log('chack this',message)
-    }
-     if (!activeSockets[selectedUserId]) {
-            alert('Selected user is not active.');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!selectedUserId) {
+                //    console.log('No user selected');
+                return;
+            }
+            const message = input.value.trim();
+            //  console.log('Message:', message);
+            if (message !== '') {
+                // Emit the message directly to the selected user
+                socket.emit('private message', {
+                    recipient: selectedUserId
+                    , message
+                });
+                input.value = '';
+                //  console.log('chack this',message)
+            }
+
+        });
+        //This is getting message from server and appending it on chat 
+        socket.on('private message', (data) => {
+            const { sender, message } = data;
+            //  console.log('Received private message:', data);
+
+            const messagesContainer = document.getElementById('messages');
+            const item = document.createElement('div');
+            const messageText = document.createElement('span');
+
+            messageText.textContent = message;
+            item.appendChild(messageText);
+            item.classList.add('message');
+
+            if (sender === userId) {
+                item.classList.add('sender');
+            } else {
+                item.classList.add('receiver');
+            }
+            // Append the message to the chat interface
+            messagesContainer.appendChild(item);
+
+        });
+        const alertBox = document.getElementById("custom-alert");
+        const alertContent = document.getElementById("alert-content");
+
+        socket.on('recipient not found', (data) => {
+            const recipient = data.recipient;
+            const alertMessage = `Oops! It seems like  is snoozing right now. 😴 Try catching them later!`;
+            showAlert(alertMessage);
+        });
+
+        function showAlert(message) {
+            alertContent.innerHTML = `<p>${message}</p>`;
+            alertBox.style.display = "block";
+            setTimeout(closeAlert, 4000);
         }
-});
-//This is getting message from server and appending it on chat 
-socket.on('private message', (data) => {
-    const { sender, message } = data;
-  //  console.log('Received private message:', data);
-    
-    const messagesContainer = document.getElementById('messages');
-    const item = document.createElement('div');
-    const messageText = document.createElement('span');
 
-    messageText.textContent = message;
-    item.appendChild(messageText);
-    item.classList.add('message');
+        function closeAlert() {
+            alertBox.style.display = "none";
+        }
 
-    // Add appropriate class based on whether the message is sent or received
-    if (sender === userId) {
-        item.classList.add('sender');
-    } else {
-        item.classList.add('receiver');
-    }
-    // Append the message to the chat interface
-    messagesContainer.appendChild(item);
-
-    // Scroll to the bottom of the chat interface
-});
-const alertBox = document.getElementById("custom-alert");
-const alertContent = document.getElementById("alert-content");
-
-socket.on('recipient not found', (data) => {
-  const recipient = data.recipient;
-  const alertMessage = `Oops! It seems like  is snoozing right now. 😴 Try catching them later!`;
-  showAlert(alertMessage);
-});
-
-function showAlert(message) {
-  alertContent.innerHTML = `<p>${message}</p>`;
-  alertBox.style.display = "block";
-  setTimeout(closeAlert, 4000); 
-}
-
-function closeAlert() {
-  alertBox.style.display = "none";
-}
-
-
-socket.on('user connected', (data) => {
-    const { userId } = data;
-    alert(`New User is connected!`);
-});
-// Listen for the user count event and update the UI
-socket.on('user count', (count) => {
-    document.getElementById('user-count').innerText = count;
-});
+        /*
+        socket.on('user connected', (data) => {
+            const { userId } = data;
+            alert(`New User is connected!`);
+        });  */
+        // Listen for the user count event and update the UI
+        socket.on('user count', (count) => {
+            document.getElementById('user-count').innerText = count;
+        });
 
 
 
@@ -176,7 +213,7 @@ socket.on('user count', (count) => {
                 emojiList.appendChild(span);
             });
         }
-</script>
+    </script>
 </body>
 
 </html>

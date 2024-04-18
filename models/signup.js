@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
 const signupSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    password: String,
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+    name: { type: String, required: true },
+    profileImage: { type: Buffer } 
 });
 
-// Exporting the model
-module.exports = mongoose.model('Signup', signupSchema);
+const Signup = mongoose.model('Signup', signupSchema);
+
+module.exports = Signup;
