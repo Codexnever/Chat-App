@@ -4,18 +4,19 @@ const mongoose = require('../config/db');
 const bcrypt = require('bcrypt');
 const requireAuth = require('../middleware/authMiddleware')
 const Signup = require('../models/signup');  // Import the Signup model
-
+const multer = require('multer'); 
+const storage = multer.memoryStorage(); // Store files in memory
+const upload = multer({ storage: storage });
 
 // Define routes on the router
 router.get('/', (req, res) => {
     res.render('Signup');
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/signup',upload.single('profileImage'), async (req, res) => {
     try {
         const { email, password, name } = req.body;
 
-        // Create a new Signup document using the Mongoose model
         const hashedPassword = await bcrypt.hash(password, 10);
         await Signup.create({ email, password: hashedPassword, name });
 

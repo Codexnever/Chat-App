@@ -13,7 +13,6 @@ router.get('/signin', (req, res) => {
 router.post('/signin', async (req, res) => {
     try {
         const { email, password } = req.body;
-
         // Find user by email using Mongoose model
         const user = await Signup.findOne({ email });
      //   console.log('Route.js:user',user)

@@ -9,6 +9,7 @@
     "dotenv": "^16.4.5",
     "emoji-mart": "^5.5.2",
     "express": "^4.19.1",
+    "express-handlebars": "^7.1.2",
     "express-session": "^1.18.0",
     "gridfs-stream": "^1.1.1",
     "hbs": "^4.2.0",

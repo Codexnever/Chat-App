@@ -8,8 +8,13 @@ const server = http.createServer(app);
 const io = socketIO(server);
 const path = require('path');
 const dbConfig = require('./config/db');
+// const handlebarshelpers = require('./helpers/handlebars-helpers');
 require('dotenv').config();
 //const requireAuth = require('./middleware/authMiddleware');
+
+// Connect to database
+dbConfig();
+// handlebarshelpers()
 
 // Other imports...
 const signupRouter = require('./routes/signupRoute'); 
@@ -20,13 +25,12 @@ const logoutRoutes = require('./routes/logout');
 // Middleware
 app.use(express.static('public'));
 app.set('view engine', 'hbs');
+
 // Set views, partialsPath, bodyParser, cookieParser
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Connect to database
-dbConfig();
 
 // Routes
 app.use(signupRouter);
@@ -41,7 +45,7 @@ io.on('connection', (socket) => {
     const userId = socket.handshake.query.userId;
     io.emit('user count', io.engine.clientsCount);
 
-    console.log(`User ${userId}  connected`);
+    // console.log(`User ${userId}  connected`);
     io.emit('user connected', { userId });
 
     // Store the socket associated with the user ID in the activeSockets object
@@ -68,7 +72,6 @@ io.on('connection', (socket) => {
         }
     });
     
-
     socket.on('disconnect', () => {
         console.log(`User ${userId} disconnected`);
         io.emit('user count', io.engine.clientsCount);

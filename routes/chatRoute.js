@@ -1,11 +1,11 @@
 const express = require('express');
-const router = express.Router(); 
-
+const router = express.Router();
 const requireAuth = require('../middleware/authMiddleware');
-const Signup = require('../models/signup'); 
+const Signup = require('../models/signup');
 const ChatMessage = require('../models/chatMessage');
+// const Handlebars = require('handlebars'); // Import Handlebars module
 
-// Define routes
+
 router.get('/chat', requireAuth, async (req, res) => {
     try {
         const user = await Signup.findById(req.userId);
@@ -21,8 +21,6 @@ router.get('/chat', requireAuth, async (req, res) => {
         res.status(500).json({ success: false, message: 'An error occurred while rendering chat interface' });
     }
 });
-
-
 
 // Logout route
 router.get('/logout', (req, res) => {

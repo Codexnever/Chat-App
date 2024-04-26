@@ -22,15 +22,13 @@ body {
 
 #messages-container {
     flex: 1;
+    padding-left: 0px;
     overflow-x: hidden;
-    /* Horizontal overflow hidden */
     overflow-y: scroll;
     position: relative;
     height: 39.3rem;
-    border: 1px solid #dad7d7;
     border-bottom: none;
     border-radius: 5px;
-    padding: 10px;
     margin-bottom: 60px;
     display: none;
     flex-direction: column-reverse;
@@ -43,7 +41,7 @@ body {
 
 #sidebar {
     width: 20px;
-    background-color: #656363;
+    background-color: #727272be;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -98,7 +96,7 @@ body {
     padding-left: 22px;
     font-size: 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 35px;
     margin-right: 10px;
 }
 
@@ -112,7 +110,7 @@ body {
     font: bold;
     border: none;
     border-radius: 5px;
-    background-color: #ffd310;
+    background-color: #ff1d1df8;
     color: #000000;
     cursor: pointer;
 }
@@ -136,12 +134,13 @@ body {
 
 .message.sender {
     align-self: flex-start;
-    background-color: #f1f368;
+    background-color: rgb(253, 70, 64);
+    /* background-color: #f1f368; */
 }
 
 .message.receiver {
     align-self: flex-end;
-    background-color: #dcf8c6;
+    background-color: #ff5555c0;
 }
 
 
@@ -159,14 +158,14 @@ body {
 
 .user {
     padding: 15px;
-    border-bottom: 1px solid #ffe607;
+    border-bottom: 1px solid #ff9797;
     width: 100%;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     cursor: pointer;
     border-radius: 5px;
-    background-color: rgb(255, 230, 8);
+    background-color: rgba(255, 62, 62, 0.897);
 }
 
 
@@ -180,7 +179,7 @@ body {
     /* Initially transparent border bottom */
     cursor: pointer;
     width: 24rem;
-    box-shadow: 0px 3px 10px rgba(209, 209, 202, 0.555);
+    box-shadow: 0px 3px 20px rgba(209, 209, 202, 0.555);
 
     transition: transform 0.3s, border-bottom 0.5s, box-shadow 0.5s;
     /* Add transition for border-bottom and box-shadow */
@@ -191,7 +190,7 @@ body {
     /* Add hover animation */
     border-bottom: 2px solid #ffd724;
     /* Border color */
-    box-shadow: 0px 10px 25px rgb(251, 255, 0);
+    box-shadow: 0px 10px 25px rgba(255, 68, 68, 0.452);
 }
 
 .user-profile-image {
@@ -212,7 +211,7 @@ body {
     position: absolute;
     bottom: 4rem;
     right: 10px;
-    background: linear-gradient(45deg, #c7db2b, #7a759dad);
+    background: linear-gradient(45deg, #db2b2b, #7a759dad);
     border: 2px solid #ccc;
     border-radius: 10px;
     padding: 5px;
@@ -224,18 +223,34 @@ body {
     animation: shadow-animation 2s ease infinite;
 
 }
+.earthemoji-selector {
+    position: absolute;
+    bottom: 4rem;
+    right: 10px;
+    border-radius: 5px;
+    background: rgb(252, 52, 52);
+    width: 200px; 
+    display: none;
+    justify-content: space-around; 
+    align-items: center;
+    z-index: 3;
+}
 
+.icon-label{
+        font: bold;
+
+}
 @keyframes shadow-animation {
     0% {
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        box-shadow: 0 0 10px rgba(255, 17, 0, 0.5);
     }
 
     50% {
-        box-shadow: 0 0 20px rgb(255, 230, 0);
+        box-shadow: 0 0 20px rgb(253, 101, 81);
     }
 
     100% {
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        box-shadow: 0 0 10px rgba(175, 57, 21, 0.5);
     }
 }
 
@@ -266,6 +281,19 @@ body {
     cursor: pointer;
 }
 
+
+.earth-icon {
+    font-size: 28px;
+    z-index: 2;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin: 0 5px;
+    border-radius: 50%;
+    padding: 8px; 
+    color: #000000;
+
+}
 #user-count-wrapper {
     display: flex;
     font-weight: bold;
@@ -292,19 +320,14 @@ body {
 @keyframes waveAnimation {
     0% {
         box-shadow: 0 0 30px rgba(136, 255, 56, 0.5);
-        /* Initial shadow */
         transform: scale(1.2);
         opacity: 1;
-        /* Fully visible */
     }
 
     50% {
         box-shadow: 0 5 80px rgba(112, 255, 17, 0.788);
-        /* Spread and shadow */
         transform: scale(2);
-        /* Scale up */
         opacity: 1;
-        /* Partially visible */
     }
 
     100% {
@@ -390,7 +413,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(121, 206, 255, 0.966);
+    background-color: rgb(255 71 71 / 77%);
     /* backdrop-filter: blur(10px); */
     padding: 10px;
     border-bottom: 1px solid #ccc;

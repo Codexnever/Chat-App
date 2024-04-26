@@ -39,18 +39,43 @@
             <div id="users">
                 {{#each users}}
                 <div class="client" data-user-id="{{this._id}}">
-                    <img src={{this.profileImage}} class="user-profile-image">
+                    <img src="" class="user-profile-image">
                     <span class="user-name">{{this.name}}</span>
                 </div>
                 {{/each}}
             </div>
+
             <form id="form">
+                <button id="emoji-icon" class="emoji-icon"><i class="fas fa-smile"></i></button>
                 <input id="input" autocomplete="off" placeholder="Type a message..." />
+                {{!-- Here Icon container --}}
                 <div class="emoji-selector" id="emojiSelectorContainer">
                     <div class="emoji-list" id="emojiList"></div>
                 </div>
-                <button id="emoji-icon" class="emoji-icon"><i class="fas fa-smile"></i></button>
-                <!-- Changed the emoji icon -->
+                {{!-- End --}}
+
+
+                {{!-- Earth container --}}
+                <div class="earthemoji-selector" id="earthemojiSelectorContainer">
+                    <div class="icon-container">
+                        <label for="fileInput">
+                            <i class="far fa-image earth-icon"></i>
+                            <div class="icon-label">Gallery</div>
+                        </label>
+                        <input id="fileInput" type="file" style="display: none;" accept="image/*">
+                    </div>
+                    <div class="icon-container">
+                        <i class="fas fa-folder-open earth-icon"></i>
+                        <div class="icon-label">Document</div>
+                    </div>
+                    <div class="icon-container">
+                        <i class="fas fa-camera earth-icon"></i>
+                        <div class="icon-label">Camera</div>
+                    </div>
+                </div>
+                {{!-- End --}}
+                <button id="earth-icon" class="earth-icon"><i class="fa-solid fa-earth-americas"
+                        style="color: black;"></i></button>
                 <button id="submit-btn">Send</button>
             </form>
         </div>
@@ -64,9 +89,9 @@
         {{!-- End --}}
         <div id="messages-container">
             <div class="top-bar">
-                <div class="left-section" >
-                    <img src="circle-image.jpg" alt="User Profile Image" class="user-profile-image">
-                    <span class="user-name">demo nam</span>
+                <div class="left-section">
+                    <img src="{{this.profileImage}}" alt="User Profile Image" class="user-profile-image">
+                    <span class="user-name"></span>
 
                 </div>
                 <div class="right-section">
@@ -80,9 +105,7 @@
     </div>
 
 
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-
     <script>
 
         const ab = document.getElementsByClassName('client');
@@ -94,23 +117,66 @@
             });
         }
 
+        //End
+
         const userId = '{{userId}}';
         const userName = '{{userName}}';
         //   console.log('this is username',userName)
         const socket = io({ query: { userId, userName } });
-        let selectedUserId = null;
+        console.log('Socket:-', socket)
 
-        // Event listener for selecting a user
+        //change topbar name according to click chat 
         document.querySelectorAll('.client').forEach(client => {
             client.addEventListener('click', () => {
-                selectedUserId = client.getAttribute('data-user-id');
-                // console.log('Selected User ID:', selectedUserId);
+                const userName = client.querySelector('.user-name').textContent;
+                document.querySelector('.top-bar .user-name').textContent = userName;
+                selectedUserId = client.dataset.userId;
+                console.log('Selected userId:', selectedUserId);
             });
         });
-
+        //End
         const form = document.getElementById('form');
         const input = document.getElementById('input');
+const fileInput = document.getElementById('fileInput');
 
+document.querySelector('.icon-container').addEventListener('click', () => {
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+        // Process the selected file here, e.g., send it to the server or display it to the user
+        console.log('Selected file:', selectedFile);
+        sendMessage(selectedFile); // Call the sendMessage function with the selected file
+    }
+});
+
+function sendMessage(file) {
+    if (!selectedUserId) {
+        console.log('No user selected');
+        return;
+    }
+    const message = input.value.trim();
+
+    const messageData = {
+        recipient: selectedUserId,
+        message: message,
+        file: file // Add the selected file to the message data
+    };
+
+    // Emit the message data to the server
+    socket.emit('private message', messageData);
+
+    // Clear the input fields
+    input.value = '';
+    fileInput.value = ''; // Reset the file input field
+
+    // Hide the emoji and earth selectors
+    emojiSelectorContainer.style.display = 'none';
+    earthemojiSelectorContainer.style.display = 'none';
+}
+        // Update the form submission logic
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             if (!selectedUserId) {
@@ -130,28 +196,58 @@
             }
 
         });
+
         //This is getting message from server and appending it on chat 
-        socket.on('private message', (data) => {
-            const { sender, message } = data;
-            //  console.log('Received private message:', data);
+ socket.on('private message', (data) => {
+    const { sender, message, file } = data;
 
-            const messagesContainer = document.getElementById('messages');
-            const item = document.createElement('div');
-            const messageText = document.createElement('span');
+    const messagesContainer = document.getElementById('messages');
+    const item = document.createElement('div');
+    const messageText = document.createElement('span');
 
-            messageText.textContent = message;
-            item.appendChild(messageText);
-            item.classList.add('message');
-
-            if (sender === userId) {
-                item.classList.add('sender');
-            } else {
-                item.classList.add('receiver');
-            }
-            // Append the message to the chat interface
-            messagesContainer.appendChild(item);
-
+    if (file) {
+        // If the message contains a file, display the image
+        const imageUrl = URL.createObjectURL(file);
+        const imageContainer = document.createElement('div');
+        imageContainer.classList.add('received-image-container');
+        const image = document.createElement('img');
+        image.src = imageUrl;
+        image.classList.add('received-image');
+        image.addEventListener('click', () => {
+            // Trigger download when the image is clicked
+            downloadImage(imageUrl);
         });
+        imageContainer.appendChild(image);
+        item.appendChild(imageContainer);
+    } else {
+        messageText.textContent = message;
+        item.appendChild(messageText);
+    }
+
+    item.classList.add('message');
+
+    if (sender === userId) {
+        item.classList.add('sender');
+    } else {
+        item.classList.add('receiver');
+    }
+    // Append the message to the chat interface
+    messagesContainer.appendChild(item);
+});
+
+function downloadImage(url) {
+    // Create an anchor element with the image URL as the href
+    const link = document.createElement('a');
+    link.href = url;
+    // Set the download attribute to force download
+    link.download = 'image.png';
+    // Append the anchor element to the document body
+    document.body.appendChild(link);
+    // Trigger a click event on the anchor element
+    link.click();
+    // Remove the anchor element from the document body
+    document.body.removeChild(link);
+}
         const alertBox = document.getElementById("custom-alert");
         const alertContent = document.getElementById("alert-content");
 
@@ -196,7 +292,20 @@
             }
             isEmojiSelectorVisible = !isEmojiSelectorVisible;
         });
+        //This is for earth container
+        const earthemojiSelectorContainer = document.getElementById('earthemojiSelectorContainer');
+        const earthemojiIcon = document.getElementById('earth-icon');
+        let earthisEmojiSelectorVisible = false;
 
+        earthemojiIcon.addEventListener('click', () => {
+            if (!earthisEmojiSelectorVisible) {
+                earthemojiSelectorContainer.style.display = 'flex';
+            } else {
+                earthemojiSelectorContainer.style.display = 'none';
+            }
+            earthisEmojiSelectorVisible = !earthisEmojiSelectorVisible;
+        });
+        //End
         fetch('https://emoji-api.com/emojis?access_key=61ef1993745253f77c1a8f71da4f353b67de7f5e')
             .then(res => res.json())
             .then(data => loadEmoji(data))
@@ -214,6 +323,7 @@
             });
         }
     </script>
+
 </body>
 
 </html>
