@@ -1,9 +1,6 @@
 {
-    "build": {
-      "commands": [
-        "npm install", 
-        "npm rebuild bcrypt --build-from-source"
-      ]
-    }
+    "builds": [
+      { "src": "build.cmd", "use": "@now/node" }
+    ]
   }
   
